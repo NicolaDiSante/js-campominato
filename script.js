@@ -1,92 +1,80 @@
-/**
- * CAMPO MINATO
- * 
- * OBIETTIVO: estrarre 100 numeri da 1 a cento tutti diversi
- * il computer ne estrae 16 (bombe)
- * il giocatore ne estrae una alla volta
- * vince se estrae 100 - 16 (84) numeri senza mai incontrare una bomba
- * i numeri inseriti devono essere tutti diversi e compresi fra 1 e 100
- * il punteggio è dato da quanti tentativi sei tiuscito a fare prima di incontrare una bomba
- * il gioco finisce quando incontri una bomba o quando il giocatore ha fatto 84 tentatitivi
- * 
- */
+var limite = 100; // Creo una variabile contenente il numero massimo di numeri
+var num_bombe = 16; // Creo una variabile contenente le bombe del pc
+var max_tentativi = limite - num_bombe; // Creo una variabile con il numero massimo di tentativi per arrivare alla vittoria
+var arr_bombe = generatoreBombe(num_bombe, limite); // Devo creare una variabile contenente la funione che genera le bombe random
+var num_giocati = []; // Creo un array vuoto in cui andrò ad inserire i numeri giocati dall'utente
+var gioco_finito = false; // Creo la condizione per cui il ciclo finirà
 
 
- // creo una funzione che mette in un array la lista delle bombe
- function bombsGenerator(numBombs, max){
-  var arrBombs = []; // creo un array per memorizzare le bombe
+// Creo il ciclo per cui il gioco continua a girare fino a quando la condizione di gioco finito diventa true
+while(gioco_finito === false){
+  
+  //Creo una variabile con dentro la richiesta per l'utente
+  var numero = parseInt(prompt("Inserisci un numero da 1 a 100"));
 
-  // creo un ciclo che aggiunge le bombe nell'array e si ferma quando ne ha trovate numBombs
-  // ATTENZIONE! le bombe devono essere tutte diverse
-  while(arrBombs.length < numBombs){
-    // estraggo la bomba
-    var bomb = getRandomNumber(max);
-    if(arrBombs.includes(bomb) === false) // se non trovo bombs dentro a arrBombs è la condizione per aggiungerlo
-    {
-      arrBombs.push(bomb);
+  //Creo le condizioni del gioco
+  // se l'utente ha già inserito un numero
+  // se l'utente ha inserito un numero che corrisponde ad una bomba
+  // se il numero è maggiore a 100
+  // se il numero è minore di 1
+  // se non viene inserito un numero
+  // se il numero di tentativi raggiunge lo stesso numero dei numeri giocati 
+  if(num_giocati.includes(numero) === true){
+
+    alert("Hai già inserito questo numero, riprova!")
+
+  }else if(arr_bombe.includes(numero) === true){
+
+    alert("Mi dispiace hai perso. Hai fatto: " + num_giocati.length + " tentativi")
+    gioco_finito = true;
+
+  }else if(numero > limite){
+
+    alert("Occhio, il numero è superiore a " + limit + " . Inserisci un altro numero!")
+
+  }else if(numero < 1){
+
+    alert("Occhio, il numero inserito è minore di 1! Inserisci un numero da 1 a 100!")
+
+  }else if(isNaN(numero) === true){
+
+    alert("Attenzione non hai inserito un numero, Ritenta!")
+
+  }else{
+
+    num_giocati.push(numero);
+    if(max_tentativi === num_giocati.length){
+      alert("HAI VINTO!")
+      gioco_finito = true;
     }
   }
 
-  return arrBombs;
   
 }
 
-// generatore di numeri random
-function getRandomNumber(max){
-  // restituisco un numero random con limite max
-  return Math.ceil(Math.random() * max);
+
+// Devo creare una funzione che genera 16 numeri random su 100 e li mette dentro un array che una volta evocato conterrà le 16 bombe(numeri) da evitare
+function generatoreBombe(numeroBombe, max){
+  var arrBombs = [];
+
+  //creo un ciclo che va avanti fino a quando non si raggiungono 16 bombe (numeroBombe == num_bombe)
+  while(arrBombs.length < numeroBombe){
+    var bomba = getRandomNumber(max);
+  
+  //creo una condizione per cui se un numero estratto non è già presente nell'array delle bombe allora deve essere inserito, altrimenti il ciclo continua a girare
+    if(arrBombs.includes(bomba) === false){
+      arrBombs.push(bomba);
+    }
+  }
+
+  // devo chiedere il return dell'array
+  return arrBombs;
 }
 
 
-
-
- var limit = 100;
- var numeroBombe = 16; 
- 
- var maxTentativi = limit - numeroBombe;  // quindi saranno 84
- var arrBombe = bombsGenerator(numeroBombe,limit); // per prima cosa creo una funzione che mi generi le bombe
- var arrNumeriGiocati = []; // dove salvo tutti i tentativi. mi serve anche come contatore
- 
- // il ciclo gira fino a quando non si verifica la condizione di gioco finito
- var gioco_finito = false;
- while(gioco_finito === false){
- 
-   var number = parseInt(prompt("Inserici un numero"));
- 
-   if(arrNumeriGiocati.includes(number) === true) { // verifico che il numero non sia presente dentro arrNumeriGiocati
- 
-      alert("Attenzione! Il numero è già stato inserito.\nRiprova!")
- 
-   }else if(arrBombe.includes(number) === true) { // verifico che il numero non sia fra le bombe. se è presente finsce il gioco
- 
-      alert("Hai perso!\nHai fatto "+ arrNumeriGiocati.length + " tentativi");
-      console.log("Tentativi fatti: ("+arrNumeriGiocati.length+") "+ arrNumeriGiocati.join() + "\nIl numero che ti ha fatto perdere è stato il "+ number);
-      gioco_finito = true;
- 
-   }else if( number > limit ){ // il numero non deve essere supriore al limite (100)
- 
-     alert("Attenzione! Il numero è superiore a "+limit+".\nRiprova!")
- 
-   }else if( number < 1 ){ // il numero non deve essere inveriore  a 1
- 
-     alert("Attenzione! Il numero è inferiore a 1.\nRiprova!")
- 
-   }else if( isNaN(number) === true ){ // il numero deve essere un numero
- 
-     alert("Attenzione! Non hai inserto un numero.\nRiprova!")
- 
-   }
-   else{ // se il numero giocato è valido lo aggiungo alla lita (arrNumeriGiocati)
- 
-     arrNumeriGiocati.push(number); // aggingo quindi il lumero estratto dentro l'array con lo storico di tutte le giocate
-     if(maxTentativi === arrNumeriGiocati.length) // controllo se i numeri estratti sono uguali al numero di tentativi possibili
-     {
-       alert("HAI VINTO!!");
-       gioco_finito = true;
-     }
- 
-   }
- }
- 
+//Devo creare una funzione che genera numeri random fino al max che sarebbe 100
+function generatoreNumeri(max){
+  return Math.ceil(Math.random() * max);
+}
  
  
